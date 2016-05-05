@@ -1,0 +1,40 @@
+{
+    "name": "fly-crud/fly-crud",
+    "type": "library",
+    "description": "Simple crud system build on top of flysystem",
+    "keywords": ["flysystem", "yaml", "json", "crud"],
+    "homepage": "https://github.com/oscarotero/fly-crud",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Oscar Otero",
+            "email": "oom@oscarotero.com",
+            "homepage": "http://oscarotero.com",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "email": "oom@oscarotero.com",
+        "issues": "https://github.com/oscarotero/fly-crud/issues"
+    },
+    "require": {
+        "php": ">=5.4.0",
+        "league/flysystem": "^1.0"
+    },
+    "suggest": {
+        "symfony/yaml": "To use YamlRepository"
+    },
+    "autoload": {
+        "psr-4": {
+            "FlyCrud\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "FlyCrud\\Tests\\": "tests"
+        }
+    },
+    "require-dev": {
+        "symfony/yaml": "^3.0"
+    }
+}
