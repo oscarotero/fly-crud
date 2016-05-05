@@ -10,7 +10,7 @@ This library provides a simple way to manage data stored in files using [flysyst
 
 ## Installation
 
-The library is compatible with PHP >= 5.4 and installable and autoloadable via Composer as [fly-crud/fly-crud](https://packagist.org/packages/fly-crud/fly-crud).
+The library is compatible with PHP >= 5.5 and installable and autoloadable via Composer as [fly-crud/fly-crud](https://packagist.org/packages/fly-crud/fly-crud).
 
 ```
 $ composer require fly-crud/fly-crud

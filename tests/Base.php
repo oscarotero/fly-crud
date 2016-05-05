@@ -9,7 +9,7 @@ abstract class Base extends \PHPUnit_Framework_TestCase
 {
     protected static function createRepo($class, $dirname)
     {
-        $path = __DIR__.'/assets/'.$dirname;
+        $path = __DIR__.'/tmp/'.$dirname;
 
         if (!is_dir($path)) {
             mkdir($path, 0777);
