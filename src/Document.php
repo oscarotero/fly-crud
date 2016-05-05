@@ -10,7 +10,7 @@ class Document implements JsonSerializable
     protected $data;
 
     /**
-     * Constructor
+     * Constructor.
      * 
      * @param array $data
      * @param mixed $id
@@ -22,7 +22,7 @@ class Document implements JsonSerializable
     }
 
     /**
-     * Returns a value of the document
+     * Returns a value of the document.
      * 
      * @param string $name
      * 
@@ -34,7 +34,7 @@ class Document implements JsonSerializable
     }
 
     /**
-     * Create/edit a value
+     * Create/edit a value.
      * 
      * @param string $name
      * @param mixed  $value
@@ -55,7 +55,7 @@ class Document implements JsonSerializable
     }
 
     /**
-     * Set a new id for the document
+     * Set a new id for the document.
      * 
      * @param mixed $id
      * 
@@ -69,7 +69,7 @@ class Document implements JsonSerializable
     }
 
     /**
-     * Returns the document id
+     * Returns the document id.
      * 
      * @return mixed
      */
@@ -79,7 +79,7 @@ class Document implements JsonSerializable
     }
 
     /**
-     * Returns the document data
+     * Returns the document data.
      * 
      * @return array
      */
@@ -89,7 +89,7 @@ class Document implements JsonSerializable
     }
 
     /**
-     * Change the document data
+     * Change the document data.
      * 
      * @param array $data
      * 

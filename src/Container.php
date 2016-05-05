@@ -9,10 +9,10 @@ class Container
     protected $repositories = [];
 
     /**
-     * Create a container with some repositories.
+     * Create a container with various repositories.
      * 
-     * @param FilesystemInterface $filesystem
-     * @param string              $class
+     * @param string $name
+     * @param array  $args
      */
     public static function __callStatic($name, $args)
     {
@@ -60,8 +60,6 @@ class Container
      *
      * @param string     $name
      * @param Repository $repository
-     *
-     * @return self
      */
     public function __set($name, Repository $repository)
     {
