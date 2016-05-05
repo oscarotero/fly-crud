@@ -1,7 +1,6 @@
 # fly-crud
 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/oscarotero/fly-crud/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/oscarotero/fly-crud/?branch=master)
-
 [![Build Status](https://travis-ci.org/oscarotero/fly-crud.svg?branch=master)](https://travis-ci.org/oscarotero/fly-crud)
 
 Sometimes you don't need a database, just some data in yaml/json/etc files to build a website.
