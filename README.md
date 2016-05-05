@@ -2,6 +2,8 @@
 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/oscarotero/fly-crud/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/oscarotero/fly-crud/?branch=master)
 
+[![Build Status](https://travis-ci.org/oscarotero/fly-crud.svg?branch=master)](https://travis-ci.org/oscarotero/fly-crud)
+
 Sometimes you don't need a database, just some yaml/json/etc files with the data to build the website.
 
 This library provides a simple way to manage data stored in files using [flysystem](http://flysystem.thephpleague.com/) as a filesystem engine.
