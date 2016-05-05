@@ -1,11 +1,12 @@
 <?php
 
-namespace FlyCrud\tests;
+namespace FlyCrud\Tests;
 
 use FlyCrud\Document;
 use FlyCrud\Repository;
 use FlyCrud\JsonRepository;
 use FlyCrud\YamlRepository;
+use FlyCrud\SerializeRepository;
 
 class SimpleTest extends Base
 {
@@ -23,6 +24,15 @@ class SimpleTest extends Base
         $repo = self::createRepo(YamlRepository::class, 'yaml');
 
         $this->assertInstanceOf(YamlRepository::class, $repo);
+
+        $this->commonTests($repo);
+    }
+
+    public function testSerialize()
+    {
+        $repo = self::createRepo(SerializeRepository::class, 'txt');
+
+        $this->assertInstanceOf(SerializeRepository::class, $repo);
 
         $this->commonTests($repo);
     }

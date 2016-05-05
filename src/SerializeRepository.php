@@ -2,16 +2,16 @@
 
 namespace FlyCrud;
 
-class JsonRepository extends Repository
+class SerializeRepository extends Repository
 {
-    protected $extension = 'json';
+    protected $extension = 'txt';
 
     /**
      * {@inheritdoc}
      */
     protected function stringify(array $data)
     {
-        return json_encode($data, JSON_PRETTY_PRINT);
+        return serialize($data);
     }
 
     /**
@@ -19,6 +19,6 @@ class JsonRepository extends Repository
      */
     protected function parse($source)
     {
-        return json_decode($source, true);
+        return unserialize($source);
     }
 }

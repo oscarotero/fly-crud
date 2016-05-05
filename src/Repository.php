@@ -13,7 +13,7 @@ abstract class Repository implements ArrayAccess
     protected $cache = [];
 
     /**
-     * Init the repository
+     * Init the repository.
      * 
      * @param FilesystemInterface $filesystem
      */
@@ -71,7 +71,7 @@ abstract class Repository implements ArrayAccess
     }
 
     /**
-     * Returns all documents
+     * Returns all documents.
      * 
      * @return array
      */
@@ -88,7 +88,7 @@ abstract class Repository implements ArrayAccess
     }
 
     /**
-     * Read and return a document
+     * Read and return a document.
      * 
      * @param string $id
      * 
@@ -104,7 +104,7 @@ abstract class Repository implements ArrayAccess
     }
 
     /**
-     * Read and return a document
+     * Read and return a document.
      * 
      * @param string $id
      * 
@@ -122,7 +122,7 @@ abstract class Repository implements ArrayAccess
     }
 
     /**
-     * Read and return a document
+     * Read and return a document.
      * 
      * @param string $id
      * 
@@ -141,7 +141,7 @@ abstract class Repository implements ArrayAccess
     }
 
     /**
-     * Saves a document
+     * Saves a document.
      * 
      * @param Document $document
      * 
@@ -161,7 +161,7 @@ abstract class Repository implements ArrayAccess
     }
 
     /**
-     * Deletes a document
+     * Deletes a document.
      * 
      * @param Document $document
      * 
@@ -174,12 +174,12 @@ abstract class Repository implements ArrayAccess
         $path = $this->getPath($id);
         $this->filesystem->delete($path);
         unset($this->cache[$id]);
-        
+
         return $this;
     }
 
     /**
-     * Returns the file path of an Id
+     * Returns the file path of an Id.
      * 
      * @param string $id
      * 

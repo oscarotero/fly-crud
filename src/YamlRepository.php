@@ -9,11 +9,7 @@ class YamlRepository extends Repository
     protected $extension = 'yml';
 
     /**
-     * Transform the data to a string.
-     * 
-     * @param array $data
-     * 
-     * @return string
+     * {@inheritdoc}
      */
     protected function stringify(array $data)
     {
@@ -21,11 +17,7 @@ class YamlRepository extends Repository
     }
 
     /**
-     * Transform the string to an array.
-     * 
-     * @param string $source
-     * 
-     * @return array
+     * {@inheritdoc}
      */
     protected function parse($source)
     {
