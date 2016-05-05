@@ -1,6 +1,6 @@
 <?php
 
-namespace FlyCrud\Tests;
+namespace FlyCrud\tests;
 
 use FlyCrud\Document;
 use FlyCrud\Repository;
@@ -31,14 +31,14 @@ class SimpleTest extends Base
     {
         $document = new Document([
             'title' => 'Hello world',
-            'text' => 'Lorem ipsum dolor sit amet'
+            'text' => 'Lorem ipsum dolor sit amet',
         ], 'hello');
 
         $repo->save($document);
 
         $repo['hello2'] = [
             'title' => 'Hello world2',
-            'text' => 'Lorem ipsum dolor sit amet2'
+            'text' => 'Lorem ipsum dolor sit amet2',
         ];
 
         $this->assertTrue(isset($repo['hello']));

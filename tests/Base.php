@@ -1,6 +1,6 @@
 <?php
 
-namespace FlyCrud\Tests;
+namespace FlyCrud\tests;
 
 use League\Flysystem\Filesystem;
 use League\Flysystem\Adapter\Local;
