@@ -75,3 +75,24 @@ if (isset($repo['new-post'])) {
 //Delete a document
 unset($repo['new-post']);
 ```
+
+## The container
+
+The purpose of the container is to create and store multiple repositories. Let's say we have a directory with subdirectories containing yaml files:
+
+```php
+use League\Flysystem\Filesystem;
+use League\Flysystem\Adapter\Local;
+use FlyCrud\Container;
+
+//Create a filesystem instance pointing to the root directory.
+$filesystem = new Filesystem(new Local('/path/to/content'));
+
+//Create a yaml repository for each subdirectory:
+$container = Container::YamlRepository($filesystem);
+
+//Access to the individual repository
+$posts = $container->posts;
+
+$post = $posts['first-post'];
+```

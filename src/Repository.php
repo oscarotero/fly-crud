@@ -7,7 +7,7 @@ use ArrayAccess;
 
 abstract class Repository implements ArrayAccess
 {
-    protected $path = '/';
+    protected $path;
     protected $extension = '';
     protected $filesystem;
     protected $cache = [];
@@ -16,10 +16,12 @@ abstract class Repository implements ArrayAccess
      * Init the repository.
      * 
      * @param FilesystemInterface $filesystem
+     * @param string              $path
      */
-    public function __construct(FilesystemInterface $filesystem)
+    public function __construct(FilesystemInterface $filesystem, $path = '/')
     {
         $this->filesystem = $filesystem;
+        $this->path = $path;
     }
 
     /**
@@ -79,7 +81,7 @@ abstract class Repository implements ArrayAccess
     {
         $documents = [];
 
-        foreach ($this->filesystem->listContents() as $info) {
+        foreach ($this->filesystem->listContents($this->path) as $info) {
             $id = $info['filename'];
             $documents[$id] = $this->get($id);
         }
