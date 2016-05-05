@@ -16,18 +16,25 @@ class Container
      */
     public static function __callStatic($name, $args)
     {
-        $filesystem = array_shift($args);
-
-        if (!($filesystem instanceof FilesystemInterface)) {
-            throw new \InvalidArgumentException(sprintf('Invalid argument. Expected a %s but got %s', FilesystemInterface::class, gettype($filesystem)));
-        }
-
         $class = __NAMESPACE__.'\\'.ucfirst($name);
 
         if (!class_exists($class)) {
-            throw new BadMethodCallException(sprintf('The repository class "%s" does not exists', $class));
+            throw new BadMethodCallException(sprintf('The repository "%s" does not exists', $class));
         }
 
+        return self::create(array_shift($args), $class);
+    }
+
+    /**
+     * Creates a container with a repository for each subdirectory.
+     * 
+     * @param FilesystemInterface $filesystem
+     * @param string              $class
+     * 
+     * @return static
+     */
+    private static function create(FilesystemInterface $filesystem, $class)
+    {
         $container = new static();
 
         foreach ($filesystem->listContents() as $info) {

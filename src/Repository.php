@@ -139,6 +139,10 @@ abstract class Repository implements ArrayAccess
         $path = $this->getPath($id);
         $source = $this->filesystem->read($path);
 
+        if ($source === false) {
+            throw new Exception(sprintf('File not found: %s', $path));
+        }
+
         return $this->cache[$id] = new Document($this->parse($source), $id);
     }
 
