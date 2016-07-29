@@ -2,63 +2,56 @@
 
 namespace FlyCrud\Tests;
 
+use FlyCrud\Directory;
 use FlyCrud\Document;
-use FlyCrud\Repository;
-use FlyCrud\JsonRepository;
-use FlyCrud\YamlRepository;
-use FlyCrud\SerializeRepository;
+use FlyCrud\Formats;
+use PHPUnit_Framework_TestCase;
 
-class SimpleTest extends Base
+class SimpleTest extends PHPUnit_Framework_TestCase
 {
     public function testJson()
     {
-        $repo = self::createRepo(JsonRepository::class, 'json');
-
-        $this->assertInstanceOf(JsonRepository::class, $repo);
+        $repo = Directory::make(__DIR__.'/tmp', new Formats\Json());
 
         $this->commonTests($repo);
     }
 
     public function testYaml()
     {
-        $repo = self::createRepo(YamlRepository::class, 'yaml');
-
-        $this->assertInstanceOf(YamlRepository::class, $repo);
+        $repo = Directory::make(__DIR__.'/tmp', new Formats\Yaml());
 
         $this->commonTests($repo);
     }
 
     public function testSerialize()
     {
-        $repo = self::createRepo(SerializeRepository::class, 'txt');
-
-        $this->assertInstanceOf(SerializeRepository::class, $repo);
+        $repo = Directory::make(__DIR__.'/tmp', new Formats\Serialize());
 
         $this->commonTests($repo);
     }
 
-    private function commonTests(Repository $repo)
+    private function commonTests(Directory $repo)
     {
         $document = new Document([
             'title' => 'Hello world',
             'text' => 'Lorem ipsum dolor sit amet',
-        ], 'hello');
+        ]);
 
-        $repo->save($document);
+        $repo->saveDocument('hello', $document);
 
-        $repo['hello2'] = [
+        $repo->hello2 = new Document([
             'title' => 'Hello world2',
             'text' => 'Lorem ipsum dolor sit amet2',
-        ];
+        ]);
 
-        $this->assertTrue(isset($repo['hello']));
-        $this->assertTrue($repo->has('hello2'));
+        $this->assertTrue($repo->hasDocument('hello2'));
+        $this->assertTrue(isset($repo->hello));
 
-        $saved = $repo->get('hello');
+        $saved = $repo->getDocument('hello');
 
         $this->assertInstanceOf(Document::class, $saved);
         $this->assertSame($document, $saved);
-        $this->assertSame($document, $repo['hello']);
+        $this->assertSame($document, $repo->hello);
         $this->assertEquals('Hello world', $saved->title);
         $this->assertEquals('Lorem ipsum dolor sit amet', $saved->text);
 
@@ -67,10 +60,10 @@ class SimpleTest extends Base
         $this->assertArrayHasKey('hello', $all);
         $this->assertInstanceOf(Document::class, $all['hello']);
 
-        $repo->delete($document);
-        unset($repo['hello2']);
+        $repo->delete('hello');
+        unset($repo->hello2);
 
-        $this->assertFalse($repo->has('hello'));
-        $this->assertFalse($repo->has('hello2'));
+        $this->assertFalse($repo->hasDocument('hello'));
+        $this->assertFalse($repo->hasDocument('hello2'));
     }
 }

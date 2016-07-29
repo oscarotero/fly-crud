@@ -6,7 +6,6 @@ use JsonSerializable;
 
 class Document implements JsonSerializable
 {
-    protected $id;
     protected $data;
 
     /**
@@ -15,15 +14,12 @@ class Document implements JsonSerializable
      * @param array $data
      * @param mixed $id
      */
-    public function __construct(array $data = [], $id = null)
+    public function __construct(array $data = [])
     {
-        $this->setData($data);
-        $this->setId($id ?: uniqid());
+        $this->data = $data;
     }
 
     /**
-     * Returns a value of the document.
-     * 
      * @param string $name
      * 
      * @return mixed
@@ -34,14 +30,28 @@ class Document implements JsonSerializable
     }
 
     /**
-     * Create/edit a value.
-     * 
      * @param string $name
      * @param mixed  $value
      */
     public function __set($name, $value)
     {
         $this->data[$name] = $value;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function __isset($name)
+    {
+        return isset($this->data[$name]);
+    }
+
+    /**
+     * @param string $name
+     */
+    public function __unset($name)
+    {
+        unset($this->data[$name]);
     }
 
     /**
@@ -55,35 +65,11 @@ class Document implements JsonSerializable
     }
 
     /**
-     * Set a new id for the document.
-     * 
-     * @param mixed $id
-     * 
-     * @return self
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    /**
-     * Returns the document id.
-     * 
-     * @return mixed
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
      * Returns the document data.
      * 
      * @return array
      */
-    public function getData()
+    public function toArray()
     {
         return $this->data;
     }
@@ -95,7 +81,21 @@ class Document implements JsonSerializable
      * 
      * @return self
      */
-    public function setData(array $data)
+    public function edit(array $data)
+    {
+        $this->data = $data + $this->data;
+
+        return $this;
+    }
+
+    /**
+     * Change the document data.
+     * 
+     * @param array $data
+     * 
+     * @return self
+     */
+    public function replace(array $data)
     {
         $this->data = $data;
 
