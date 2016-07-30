@@ -11,21 +11,21 @@ class SimpleTest extends PHPUnit_Framework_TestCase
 {
     public function testJson()
     {
-        $repo = Directory::make(__DIR__.'/tmp', new Formats\Json());
+        $repo = Directory::make(__DIR__, new Formats\Json());
 
         $this->commonTests($repo);
     }
 
     public function testYaml()
     {
-        $repo = Directory::make(__DIR__.'/tmp', new Formats\Yaml());
+        $repo = Directory::make(__DIR__, new Formats\Yaml());
 
         $this->commonTests($repo);
     }
 
     public function testSerialize()
     {
-        $repo = Directory::make(__DIR__.'/tmp', new Formats\Serialize());
+        $repo = Directory::make(__DIR__, new Formats\Serialize());
 
         $this->commonTests($repo);
     }
@@ -38,32 +38,35 @@ class SimpleTest extends PHPUnit_Framework_TestCase
         ]);
 
         $repo->saveDocument('hello', $document);
+        $subdir = $repo->createDirectory('subdir');
 
-        $repo->hello2 = new Document([
+        $this->assertTrue($repo->hasDirectory('subdir'));
+
+        $subdir['hello2'] = new Document([
             'title' => 'Hello world2',
             'text' => 'Lorem ipsum dolor sit amet2',
         ]);
 
-        $this->assertTrue($repo->hasDocument('hello2'));
-        $this->assertTrue(isset($repo->hello));
+        $this->assertTrue($subdir->hasDocument('hello2'));
+        $this->assertTrue($repo->hasDocument('subdir/hello2'));
+        $this->assertTrue(isset($repo['hello']));
 
         $saved = $repo->getDocument('hello');
 
         $this->assertInstanceOf(Document::class, $saved);
         $this->assertSame($document, $saved);
-        $this->assertSame($document, $repo->hello);
+        $this->assertSame($document, $repo['hello']);
         $this->assertEquals('Hello world', $saved->title);
         $this->assertEquals('Lorem ipsum dolor sit amet', $saved->text);
 
-        $all = $repo->getAll();
+        $documents = $repo->getAllDocuments();
 
-        $this->assertArrayHasKey('hello', $all);
-        $this->assertInstanceOf(Document::class, $all['hello']);
+        $this->assertArrayHasKey('hello', $documents);
+        $this->assertInstanceOf(Document::class, $documents['hello']);
 
-        $repo->delete('hello');
-        unset($repo->hello2);
+        $repo->deleteDocument('hello');
+        $repo->deleteDirectory('subdir');
 
         $this->assertFalse($repo->hasDocument('hello'));
-        $this->assertFalse($repo->hasDocument('hello2'));
     }
 }

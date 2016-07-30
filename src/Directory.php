@@ -5,13 +5,15 @@ namespace FlyCrud;
 use League\Flysystem\FilesystemInterface;
 use League\Flysystem\Filesystem;
 use League\Flysystem\Adapter\Local;
+use ArrayAccess;
 
-class Directory
+class Directory implements ArrayAccess
 {
     protected $path;
     protected $format;
     protected $filesystem;
-    protected $cache = [];
+    protected $documents = [];
+    protected $directories = [];
 
     /**
      * Creates a new directory instance
@@ -41,89 +43,27 @@ class Directory
     }
 
     /**
-     * Getter magic method
-     * 
-     * @param string $id
-     * 
-     * @return Document|Directory
-     */
-    public function __get($id)
-    {
-        if (isset($this->cache[$id])) {
-            return $this->cache[$id];
-        }
-
-        if ($this->hasDirectory($id)) {
-            return $this->getDirectory($id);
-        }
-
-        return $this->getDocument($id);
-    }
-
-    /**
-     * Setter magic method
-     * 
-     * @param string             $id
-     * @param Document             $document
-     */
-    public function __set($id, Document $document)
-    {
-        return $this->saveDocument($id, $document);
-    }
-
-    /**
-     * Isset magic method
-     * 
-     * @param string             $id
-     */
-    public function __isset($id)
-    {
-        return $this->hasDirectory($id) || $this->hasDocument($id);
-    }
-
-    /**
-     * Unset magic method
-     * 
-     * @param string             $id
-     */
-    public function __unset($id)
-    {
-        $this->delete($id);
-    }
-
-    /**
      * Read and return a document.
      * 
      * @param string $id
-     * @param bool   $create
      * 
      * @return Document
      */
-    public function getDocument($id, $create = false)
+    public function getDocument($id)
     {
-        switch ($this->getCacheType($id)) {
-            case 'dir':
-                throw new Exception(sprintf('The id "%s" is not a document', $id));
-
-            case 'file':
-                return $this->cache[$id];
+        if (isset($this->documents[$id])) {
+            return $this->documents[$id];
         }
 
-        $path = $this->getDocumentPath($id);
-        $type = $this->getPathType($path);
-
-        if ($type === 'dir') {
-            throw new Exception(sprintf('The id "%s" is not a document', $id));
-        }
-
-        if ($type === 'file') {
+        if ($this->hasDocument($id)) {
+            $path = $this->getDocumentPath($id);
             $source = $this->filesystem->read($path);
 
             if (is_string($source)) {
-                return $this->cache[$id] = new Document($this->format->parse($source), $id);
+                return $this->documents[$id] = new Document($this->format->parse($source));
             }
-        } elseif ($create) {
-            return $this->cache[$id] = new Document([], $id);
+
+            throw new Exception(sprintf('Format error in the file "%s"', $path));
         }
 
         throw new Exception(sprintf('File "%s" not found', $path));
@@ -133,53 +73,20 @@ class Directory
      * Read and return a directory.
      * 
      * @param string $id
-     * @param bool   $create
      * 
      * @return Document
      */
-    public function getDirectory($id, $create = false)
+    public function getDirectory($id)
     {
-        switch ($this->getCacheType($id)) {
-            case 'file':
-                throw new Exception(sprintf('The id "%s" is not a directory', $id));
-
-            case 'dir':
-                return $this->cache[$id];
+        if (isset($this->directories[$id])) {
+            return $this->directories[$id];
         }
 
-        $path = $this->getDirectoryPath($id);
-        $type = $this->getPathType($path);
-        
-        if ($type === 'file') {
-            throw new Exception(sprintf('The id "%s" is not a directory', $id));
-        }
-
-        if ($type === 'dir' || $create) {
-            return $this->cache[$id] = new static($this->filesystem, $path, $this->format);
+        if ($this->hasDirectory($id)) {
+            return $this->directories[$id] = new static($this->filesystem, $this->getDirectoryPath($id), $this->format);
         }
 
         throw new Exception(sprintf('Directory "%s" not found', $path));
-    }
-
-    /**
-     * Check whether a document or directory exists.
-     * 
-     * @param string $id
-     * 
-     * @return bool
-     */
-    public function hasDirectory($id)
-    {
-        switch ($this->getCacheType($id)) {
-            case 'dir':
-                return true;
-
-            case 'file':
-                return false;
-
-            default:
-                return $this->getPathType($this->getDirectoryPath($id)) === 'dir';
-        }
     }
 
     /**
@@ -191,16 +98,43 @@ class Directory
      */
     public function hasDocument($id)
     {
-        switch ($this->getCacheType($id)) {
-            case 'dir':
-                return false;
-
-            case 'file':
-                return true;
-
-            default:
-                return $this->getPathType($this->getDocumentPath($id)) === 'file';
+        if (isset($this->documents[$id])) {
+            return true;
         }
+
+        $path = $this->getDocumentPath($id);
+
+        if ($this->filesystem->has($path)) {
+            $info = $this->filesystem->getMetadata($path);
+
+            return $info['type'] === 'file';
+        }
+
+        return false;
+    }
+
+    /**
+     * Check whether a document or directory exists.
+     * 
+     * @param string $id
+     * 
+     * @return bool
+     */
+    public function hasDirectory($id)
+    {
+        if (isset($this->directories[$id])) {
+            return true;
+        }
+
+        $path = $this->getDirectoryPath($id);
+
+        if ($this->filesystem->has($path)) {
+            $info = $this->filesystem->getMetadata($path);
+
+            return $info['type'] === 'dir';
+        }
+
+        return false;
     }
 
     /**
@@ -213,68 +147,95 @@ class Directory
      */
     public function saveDocument($id, Document $document)
     {
-        $this->cache[$id] = $document;
-        $this->filesystem->put($this->getDocumentPath($id), $this->format->stringify($document->toArray()));
+        $this->documents[$id] = $document;
+        $this->filesystem->put($this->getDocumentPath($id), $this->format->stringify($document->getArrayCopy()));
 
         return $this;
     }
 
     /**
-     * Deletes a document or directory.
+     * Creates a new directory.
      * 
      * @param string $id
      * 
      * @return self
      */
-    public function delete($id)
+    public function createDirectory($id)
     {
-        if ($this->hasDocument($id)) {
-            $this->filesystem->delete($this->getDocumentPath($id));
-        } elseif ($this->hasDirectory($id)) {
-            $this->filesystem->deleteDir($this->getDirectoryPath($id));
-        }
+        $path = $this->getDirectoryPath($id);
+        $this->filesystem->createDir($path);
 
-        unset($this->cache[$id]);
+        return $this->directories[$id] = new static($this->filesystem, $path, $this->format);
+    }
+
+    /**
+     * Deletes a document.
+     * 
+     * @param string $id
+     * 
+     * @return self
+     */
+    public function deleteDocument($id)
+    {
+        $this->filesystem->delete($this->getDocumentPath($id));
+        unset($this->documents[$id]);
 
         return $this;
     }
 
     /**
-     * Returns all documents and directories.
+     * Deletes a directory.
+     * 
+     * @param string $id
+     * 
+     * @return self
+     */
+    public function deleteDirectory($id)
+    {
+        $this->filesystem->deleteDir($this->getDirectoryPath($id));
+        unset($this->directories[$id]);
+
+        return $this;
+    }
+
+    /**
+     * Returns all documents.
      * 
      * @return array
      */
-    public function getAll()
+    public function getAllDocuments()
     {
-        $all = [];
-        $extension = $this->format->getExtension();
+        $documents = [];
 
         foreach ($this->filesystem->listContents('/'.$this->path) as $info) {
             $id = $info['filename'];
 
-            if (isset($this->cache[$id])) {
-                $all[$id] = $this->cache[$id];
-                continue;
-            }
-
-            if ($info['type'] === 'dir') {
-                $all[$id] = $this->cache[$id] = new static($this->filesystem, $info['path'], $this->format);
-                continue;
-            }
-
-            if ($info['type'] === 'file' && $info['extension'] === $extension) {
-                $source = $this->filesystem->read($path);
-
-                if (is_string($source)) {
-                    $all[$id] = $this->cache[$id] = new Document($this->format->parse($source), $id);
-                    continue;
-                }
-
-                throw new Exception(sprintf('Invalid file "%s"', $info['path']));
+            if ($this->hasDocument($id)) {
+                $documents[$id] = $this->getDocument($id);
             }
         }
 
-        return $all;
+        return $documents;
+    }
+
+    /**
+     * Returns all directories.
+     * 
+     * @return array
+     */
+    public function getAllDirectories()
+    {
+        $directories = [];
+
+        foreach ($this->filesystem->listContents('/'.$this->path) as $info) {
+            $id = $info['filename'];
+
+            if ($this->hasDirectory($id)) {
+                $directories[$id] = $this->getDirectory($id);
+            }
+        }
+
+        return $directories;
     }
 
     /**
@@ -284,19 +245,19 @@ class Directory
      * 
      * @return string
      */
-    protected function getDocumentPath($id)
+    private function getDocumentPath($id)
     {
         return $this->getDirectoryPath($id).'.'.$this->format->getExtension();
     }
 
     /**
-     * Returns a subdirectory path.
+     * Returns a directory path.
      * 
      * @param string $id
      * 
      * @return string
      */
-    protected function getDirectoryPath($id)
+    private function getDirectoryPath($id)
     {
         if ($this->path === '') {
             return "/{$id}";
@@ -314,14 +275,80 @@ class Directory
         }
     }
 
-    private function getCacheType($id)
+    /**
+     * ArrayAccess used to documents
+     * 
+     * @param string $id
+     * 
+     * @return bool
+     */
+    public function offsetExists($id)
     {
-        if (isset($this->cache[$id])) {
-            if ($this->cache[$id] instanceof self) {
-                return 'dir';
-            }
+        return $this->hasDocument($id);
+    }
 
-            return 'file';
-        }
+    /**
+     * ArrayAccess used to documents
+     * 
+     * @param string $id
+     * 
+     * @return Document
+     */
+    public function offsetGet($id)
+    {
+        return $this->getDocument($id);
+    }
+    
+    /**
+     * ArrayAccess used to documents
+     * 
+     * @param string $id
+     * @param Document $document
+     */
+    public function offsetSet($id, $document)
+    {
+        $this->saveDocument($id, $document);
+    }
+    
+    /**
+     * ArrayAccess used to documents
+     * 
+     * @param string $id
+     */
+    public function offsetUnset($id)
+    {
+        $this->deleteDocument($id);
+    }
+
+    /**
+     * Property magic method used to directories
+     * 
+     * @param string $offset
+     * 
+     * @return Directory
+     */
+    public function __get($id)
+    {
+        return $this->getDirectory($id);
+    }
+
+    /**
+     * Property magic method used to directories
+     * 
+     * @param string             $id
+     */
+    public function __isset($id)
+    {
+        return $this->hasDirectory($id);
+    }
+
+    /**
+     * Property magic method used to directories
+     * 
+     * @param string             $id
+     */
+    public function __unset($id)
+    {
+        $this->deleteDirectory($id);
     }
 }

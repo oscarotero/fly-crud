@@ -2,21 +2,14 @@
 
 namespace FlyCrud;
 
+use ArrayObject;
 use JsonSerializable;
 
-class Document implements JsonSerializable
+class Document extends ArrayObject implements JsonSerializable
 {
-    protected $data;
-
-    /**
-     * Constructor.
-     * 
-     * @param array $data
-     * @param mixed $id
-     */
-    public function __construct(array $data = [])
+    public function __construct(array $value)
     {
-        $this->data = $data;
+        parent::__construct(self::arrayToObject($value));
     }
 
     /**
@@ -24,9 +17,10 @@ class Document implements JsonSerializable
      * 
      * @return mixed
      */
-    public function __get($name)
+    public function &__get($name)
     {
-        return isset($this->data[$name]) ? $this->data[$name] : null;
+        $value = $this->offsetExists($name) ? $this->offsetGet($name) : null;
+        return $value;
     }
 
     /**
@@ -35,7 +29,7 @@ class Document implements JsonSerializable
      */
     public function __set($name, $value)
     {
-        $this->data[$name] = $value;
+        $this->offsetSet($name, $value);
     }
 
     /**
@@ -43,7 +37,7 @@ class Document implements JsonSerializable
      */
     public function __isset($name)
     {
-        return isset($this->data[$name]);
+        return $this->offsetExists($name);
     }
 
     /**
@@ -51,7 +45,7 @@ class Document implements JsonSerializable
      */
     public function __unset($name)
     {
-        unset($this->data[$name]);
+        $this->offsetUnset($name);
     }
 
     /**
@@ -61,44 +55,58 @@ class Document implements JsonSerializable
      */
     public function jsonSerialize()
     {
-        return $this->data;
+        return $this->getArrayCopy();
     }
 
     /**
      * Returns the document data.
      * 
+     * @return self
+     */
+    public function getArrayCopy()
+    {
+        return self::objectToArray(parent::getArrayCopy());
+    }
+
+    /**
+     * Converts the associative arrays to stdClass object recursively
+     * 
+     * @param array $array
+     * 
+     * @return array|stdClass
+     */
+    private static function arrayToObject(array $array)
+    {
+        $is_object = false;
+
+        foreach ($array as $key => &$value) {
+            if (is_array($value)) {
+                $value = self::arrayToObject($value);
+            }
+
+            if (is_string($key)) {
+                $is_object = true;
+            }
+        }
+
+        return $is_object ? (object) $array : $array;
+    }
+
+    /**
+     * Converts stdClass objects to arrays recursively
+     * 
+     * @param array $array
+     * 
      * @return array
      */
-    public function toArray()
+    private static function objectToArray(array $array)
     {
-        return $this->data;
-    }
+        foreach ($array as $key => &$value) {
+            if (is_object($value) || is_array($value)) {
+                $value = self::objectToArray((array) $value);
+            }
+        }
 
-    /**
-     * Change the document data.
-     * 
-     * @param array $data
-     * 
-     * @return self
-     */
-    public function edit(array $data)
-    {
-        $this->data = $data + $this->data;
-
-        return $this;
-    }
-
-    /**
-     * Change the document data.
-     * 
-     * @param array $data
-     * 
-     * @return self
-     */
-    public function replace(array $data)
-    {
-        $this->data = $data;
-
-        return $this;
+        return (array) $array;
     }
 }
