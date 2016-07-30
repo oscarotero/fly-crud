@@ -19,7 +19,7 @@ class Document extends ArrayObject implements JsonSerializable
      */
     public function &__get($name)
     {
-        $value = $this->offsetExists($name) ? $this->offsetGet($name) : null;
+        $value = $this->offsetGet($name);
         return $value;
     }
 
