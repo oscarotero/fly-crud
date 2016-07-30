@@ -16,9 +16,9 @@ class DocumentTest extends PHPUnit_Framework_TestCase
                 ['title' => 'Section 1'],
                 ['title' => 'Section 2'],
                 ['title' => 'Section 3'],
-            ]
+            ],
         ]);
-        
+
         $this->assertEquals('hello world', $doc['title']);
         $this->assertEquals($doc['title'], $doc->title);
         $this->assertEquals($doc['tags'], $doc->tags);

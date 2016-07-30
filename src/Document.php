@@ -20,6 +20,7 @@ class Document extends ArrayObject implements JsonSerializable
     public function &__get($name)
     {
         $value = $this->offsetGet($name);
+
         return $value;
     }
 
@@ -69,7 +70,7 @@ class Document extends ArrayObject implements JsonSerializable
     }
 
     /**
-     * Converts the associative arrays to stdClass object recursively
+     * Converts the associative arrays to stdClass object recursively.
      * 
      * @param array $array
      * 
@@ -93,7 +94,7 @@ class Document extends ArrayObject implements JsonSerializable
     }
 
     /**
-     * Converts stdClass objects to arrays recursively
+     * Converts stdClass objects to arrays recursively.
      * 
      * @param array $array
      * 

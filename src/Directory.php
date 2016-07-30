@@ -16,9 +16,9 @@ class Directory implements ArrayAccess
     protected $directories = [];
 
     /**
-     * Creates a new directory instance
+     * Creates a new directory instance.
      * 
-     * @param string $path
+     * @param string          $path
      * @param FormatInterface $format
      * 
      * @return static
@@ -140,7 +140,7 @@ class Directory implements ArrayAccess
     /**
      * Saves a document.
      * 
-     * @param string $id
+     * @param string   $id
      * @param Document $document
      * 
      * @return self
@@ -276,7 +276,7 @@ class Directory implements ArrayAccess
     }
 
     /**
-     * ArrayAccess used to documents
+     * ArrayAccess used to documents.
      * 
      * @param string $id
      * 
@@ -288,7 +288,7 @@ class Directory implements ArrayAccess
     }
 
     /**
-     * ArrayAccess used to documents
+     * ArrayAccess used to documents.
      * 
      * @param string $id
      * 
@@ -298,20 +298,20 @@ class Directory implements ArrayAccess
     {
         return $this->getDocument($id);
     }
-    
+
     /**
-     * ArrayAccess used to documents
+     * ArrayAccess used to documents.
      * 
-     * @param string $id
+     * @param string   $id
      * @param Document $document
      */
     public function offsetSet($id, $document)
     {
         $this->saveDocument($id, $document);
     }
-    
+
     /**
-     * ArrayAccess used to documents
+     * ArrayAccess used to documents.
      * 
      * @param string $id
      */
@@ -321,7 +321,7 @@ class Directory implements ArrayAccess
     }
 
     /**
-     * Property magic method used to directories
+     * Property magic method used to directories.
      * 
      * @param string $offset
      * 
@@ -333,9 +333,9 @@ class Directory implements ArrayAccess
     }
 
     /**
-     * Property magic method used to directories
+     * Property magic method used to directories.
      * 
-     * @param string             $id
+     * @param string $id
      */
     public function __isset($id)
     {
@@ -343,9 +343,9 @@ class Directory implements ArrayAccess
     }
 
     /**
-     * Property magic method used to directories
+     * Property magic method used to directories.
      * 
-     * @param string             $id
+     * @param string $id
      */
     public function __unset($id)
     {
