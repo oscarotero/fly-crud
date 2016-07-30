@@ -74,7 +74,7 @@ class Directory implements ArrayAccess
      * 
      * @param string $id
      * 
-     * @return Document
+     * @return static
      */
     public function getDirectory($id)
     {
@@ -158,7 +158,7 @@ class Directory implements ArrayAccess
      * 
      * @param string $id
      * 
-     * @return self
+     * @return static
      */
     public function createDirectory($id)
     {
@@ -266,15 +266,6 @@ class Directory implements ArrayAccess
         return "/{$this->path}/{$id}";
     }
 
-    private function getPathType($path)
-    {
-        if ($this->filesystem->has($path)) {
-            $info = $this->filesystem->getMetadata($path);
-
-            return $info['type'];
-        }
-    }
-
     /**
      * ArrayAccess used to documents.
      * 
@@ -323,7 +314,7 @@ class Directory implements ArrayAccess
     /**
      * Property magic method used to directories.
      * 
-     * @param string $offset
+     * @param string $id
      * 
      * @return Directory
      */
