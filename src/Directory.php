@@ -6,6 +6,7 @@ use League\Flysystem\FilesystemInterface;
 use League\Flysystem\Filesystem;
 use League\Flysystem\Adapter\Local;
 use ArrayAccess;
+use RuntimeException;
 
 class Directory implements ArrayAccess
 {
@@ -63,10 +64,10 @@ class Directory implements ArrayAccess
                 return $this->documents[$id] = new Document($this->format->parse($source));
             }
 
-            throw new Exception(sprintf('Format error in the file "%s"', $path));
+            throw new RuntimeException(sprintf('Format error in the file "%s"', $path));
         }
 
-        throw new Exception(sprintf('File "%s" not found', $path));
+        throw new RuntimeException(sprintf('File "%s" not found', $path));
     }
 
     /**
@@ -86,7 +87,7 @@ class Directory implements ArrayAccess
             return $this->directories[$id] = new static($this->filesystem, $this->getDirectoryPath($id), $this->format);
         }
 
-        throw new Exception(sprintf('Directory "%s" not found', $path));
+        throw new RuntimeException(sprintf('Directory "%s" not found', $path));
     }
 
     /**
