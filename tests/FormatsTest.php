@@ -35,7 +35,7 @@ class FormatsTest extends PHPUnit_Framework_TestCase
 
     public function testSerialize()
     {
-        $format = new Formats\serialize();
+        $format = new Formats\Serialize();
 
         $this->assertSame('txt', $format->getExtension());
 
