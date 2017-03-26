@@ -27,6 +27,6 @@ class Json implements FormatInterface
      */
     public function parse($source)
     {
-        return json_decode($source, true);
+        return json_decode($source, true) ?: [];
     }
 }

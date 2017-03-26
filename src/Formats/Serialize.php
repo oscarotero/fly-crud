@@ -27,6 +27,6 @@ class Serialize implements FormatInterface
      */
     public function parse($source)
     {
-        return unserialize($source);
+        return unserialize($source) ?: [];
     }
 }
