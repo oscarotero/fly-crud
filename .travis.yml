@@ -9,4 +9,5 @@ php:
 before_install:
   - composer install
 
-script: phpunit
+script:
+  - composer test

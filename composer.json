@@ -35,6 +35,10 @@
         }
     },
     "require-dev": {
-        "symfony/yaml": "^3.0"
+        "symfony/yaml": "^3.0",
+        "phpunit/phpunit": "^4.8 || ^5.7"
+    },
+    "scripts": {
+        "test": "phpunit"
     }
 }
