@@ -67,7 +67,7 @@ class Directory implements ArrayAccess
             throw new RuntimeException(sprintf('Format error in the file "%s"', $path));
         }
 
-        throw new RuntimeException(sprintf('File "%s" not found', $path));
+        throw new RuntimeException(sprintf('File "%s" not found', $id));
     }
 
     /**
@@ -87,7 +87,7 @@ class Directory implements ArrayAccess
             return $this->directories[$id] = new static($this->filesystem, $this->getDirectoryPath($id), $this->format);
         }
 
-        throw new RuntimeException(sprintf('Directory "%s" not found', $path));
+        throw new RuntimeException(sprintf('Directory "%s" not found', $id));
     }
 
     /**
