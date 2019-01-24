@@ -59,7 +59,7 @@ class Document extends ArrayObject implements JsonSerializable
 
     /**
      * Converts the associative arrays to stdClass object recursively.
-     * 
+     *
      * @return array|stdClass
      */
     private static function arrayToObject(array $array)

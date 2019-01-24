@@ -213,9 +213,9 @@ class Directory implements ArrayAccess
 
     /**
      * ArrayAccess used to documents.
-     * 
+     *
      * @param string $id
-     * 
+     *
      * @return bool
      */
     public function offsetExists($id)
@@ -225,9 +225,9 @@ class Directory implements ArrayAccess
 
     /**
      * ArrayAccess used to documents.
-     * 
+     *
      * @param string $id
-     * 
+     *
      * @return Document
      */
     public function offsetGet($id)
@@ -237,7 +237,7 @@ class Directory implements ArrayAccess
 
     /**
      * ArrayAccess used to documents.
-     * 
+     *
      * @param string   $id
      * @param Document $document
      */
@@ -248,7 +248,7 @@ class Directory implements ArrayAccess
 
     /**
      * ArrayAccess used to documents.
-     * 
+     *
      * @param string $id
      */
     public function offsetUnset($id)
