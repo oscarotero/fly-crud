@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace FlyCrud\Formats;
 
@@ -16,7 +17,7 @@ class Json implements FormatInterface
         return json_encode($data, JSON_PRETTY_PRINT);
     }
 
-    public function parse($source): array
+    public function parse(string $source): array
     {
         return json_decode($source, true) ?: [];
     }

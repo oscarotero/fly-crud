@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace FlyCrud\Formats;
 
@@ -16,7 +17,7 @@ class Serialize implements FormatInterface
         return serialize($data);
     }
 
-    public function parse($source): array
+    public function parse(string $source): array
     {
         return unserialize($source) ?: [];
     }

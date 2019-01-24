@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace FlyCrud\Formats;
 
@@ -17,7 +18,7 @@ class Yaml implements FormatInterface
         return YamlConverter::dump($data);
     }
 
-    public function parse($source): array
+    public function parse(string $source): array
     {
         return (array) YamlConverter::parse($source);
     }
