@@ -5,9 +5,9 @@ namespace FlyCrud\Tests;
 use FlyCrud\Directory;
 use FlyCrud\Document;
 use FlyCrud\Formats;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class SimpleTest extends PHPUnit_Framework_TestCase
+class SimpleTest extends TestCase
 {
     public function testJson()
     {

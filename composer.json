@@ -18,7 +18,7 @@
         "issues": "https://github.com/oscarotero/fly-crud/issues"
     },
     "require": {
-        "php": ">=5.5.0",
+        "php": ">=7.1",
         "league/flysystem": "^1.0"
     },
     "suggest": {
@@ -35,8 +35,8 @@
         }
     },
     "require-dev": {
-        "symfony/yaml": "^3.0",
-        "phpunit/phpunit": "^4.8 || ^5.7"
+        "symfony/yaml": "^4.2",
+        "phpunit/phpunit": "^7.0"
     },
     "scripts": {
         "test": "phpunit"

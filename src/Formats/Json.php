@@ -6,26 +6,17 @@ use FlyCrud\FormatInterface;
 
 class Json implements FormatInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getExtension()
+    public function getExtension(): string
     {
         return 'json';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function stringify(array $data)
+    public function stringify(array $data): string
     {
         return json_encode($data, JSON_PRETTY_PRINT);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function parse($source)
+    public function parse($source): array
     {
         return json_decode($source, true) ?: [];
     }

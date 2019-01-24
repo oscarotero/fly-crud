@@ -3,9 +3,9 @@
 namespace FlyCrud\Tests;
 
 use FlyCrud\Formats;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class FormatsTest extends PHPUnit_Framework_TestCase
+class FormatsTest extends TestCase
 {
     public function testYaml()
     {

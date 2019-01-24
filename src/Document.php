@@ -13,11 +13,9 @@ class Document extends ArrayObject implements JsonSerializable
     }
 
     /**
-     * @param string $name
-     * 
      * @return mixed
      */
-    public function &__get($name)
+    public function &__get(string $name)
     {
         $value = $this->offsetGet($name);
 
@@ -25,54 +23,41 @@ class Document extends ArrayObject implements JsonSerializable
     }
 
     /**
-     * @param string $name
      * @param mixed  $value
      */
-    public function __set($name, $value)
+    public function __set(string $name, $value)
     {
         $this->offsetSet($name, $value);
     }
 
-    /**
-     * @param string $name
-     */
-    public function __isset($name)
+    public function __isset(string $name)
     {
         return $this->offsetExists($name);
     }
 
-    /**
-     * @param string $name
-     */
-    public function __unset($name)
+    public function __unset(string $name)
     {
         $this->offsetUnset($name);
     }
 
     /**
      * @see JsonSerializable
-     *
-     * @return array
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return $this->getArrayCopy();
     }
 
     /**
      * Returns the document data.
-     * 
-     * @return self
      */
-    public function getArrayCopy()
+    public function getArrayCopy(): array
     {
         return self::objectToArray(parent::getArrayCopy());
     }
 
     /**
      * Converts the associative arrays to stdClass object recursively.
-     * 
-     * @param array $array
      * 
      * @return array|stdClass
      */
@@ -95,12 +80,8 @@ class Document extends ArrayObject implements JsonSerializable
 
     /**
      * Converts stdClass objects to arrays recursively.
-     * 
-     * @param array $array
-     * 
-     * @return array
      */
-    private static function objectToArray(array $array)
+    private static function objectToArray(array $array): array
     {
         foreach ($array as $key => &$value) {
             if (is_object($value) || is_array($value)) {

@@ -18,25 +18,13 @@ class Directory implements ArrayAccess
 
     /**
      * Creates a new directory instance.
-     * 
-     * @param string          $path
-     * @param FormatInterface $format
-     * 
-     * @return static
      */
-    public static function make($path, FormatInterface $format)
+    public static function make(string $path, FormatInterface $format): Directory
     {
         return new static(new Filesystem(new Local($path)), '', $format);
     }
 
-    /**
-     * Init the directory.
-     * 
-     * @param FilesystemInterface $filesystem
-     * @param string              $path
-     * @param FormatInterface     $format
-     */
-    public function __construct(FilesystemInterface $filesystem, $path, FormatInterface $format)
+    public function __construct(FilesystemInterface $filesystem, string $path, FormatInterface $format)
     {
         $this->filesystem = $filesystem;
         $this->format = $format;
@@ -45,12 +33,8 @@ class Directory implements ArrayAccess
 
     /**
      * Read and return a document.
-     * 
-     * @param string $id
-     * 
-     * @return Document
      */
-    public function getDocument($id)
+    public function getDocument(string $id): Document
     {
         if (isset($this->documents[$id])) {
             return $this->documents[$id];
@@ -72,12 +56,8 @@ class Directory implements ArrayAccess
 
     /**
      * Read and return a directory.
-     * 
-     * @param string $id
-     * 
-     * @return static
      */
-    public function getDirectory($id)
+    public function getDirectory(string $id): Directory
     {
         if (isset($this->directories[$id])) {
             return $this->directories[$id];
@@ -92,12 +72,8 @@ class Directory implements ArrayAccess
 
     /**
      * Check whether a document exists.
-     * 
-     * @param string $id
-     * 
-     * @return bool
      */
-    public function hasDocument($id)
+    public function hasDocument(string $id): bool
     {
         if (isset($this->documents[$id])) {
             return true;
@@ -116,12 +92,8 @@ class Directory implements ArrayAccess
 
     /**
      * Check whether a document or directory exists.
-     * 
-     * @param string $id
-     * 
-     * @return bool
      */
-    public function hasDirectory($id)
+    public function hasDirectory(string $id): bool
     {
         if (isset($this->directories[$id])) {
             return true;
@@ -140,13 +112,8 @@ class Directory implements ArrayAccess
 
     /**
      * Saves a document.
-     * 
-     * @param string   $id
-     * @param Document $document
-     * 
-     * @return self
      */
-    public function saveDocument($id, Document $document)
+    public function saveDocument(string $id, Document $document): self
     {
         $this->documents[$id] = $document;
         $this->filesystem->put($this->getDocumentPath($id), $this->format->stringify($document->getArrayCopy()));
@@ -156,12 +123,8 @@ class Directory implements ArrayAccess
 
     /**
      * Creates a new directory.
-     * 
-     * @param string $id
-     * 
-     * @return static
      */
-    public function createDirectory($id)
+    public function createDirectory(string $id): Directory
     {
         $path = $this->getDirectoryPath($id);
         $this->filesystem->createDir($path);
@@ -171,12 +134,8 @@ class Directory implements ArrayAccess
 
     /**
      * Deletes a document.
-     * 
-     * @param string $id
-     * 
-     * @return self
      */
-    public function deleteDocument($id)
+    public function deleteDocument(string $id): self
     {
         $this->filesystem->delete($this->getDocumentPath($id));
         unset($this->documents[$id]);
@@ -186,12 +145,8 @@ class Directory implements ArrayAccess
 
     /**
      * Deletes a directory.
-     * 
-     * @param string $id
-     * 
-     * @return self
      */
-    public function deleteDirectory($id)
+    public function deleteDirectory(string $id): self
     {
         $this->filesystem->deleteDir($this->getDirectoryPath($id));
         unset($this->directories[$id]);
@@ -201,10 +156,8 @@ class Directory implements ArrayAccess
 
     /**
      * Returns all documents.
-     * 
-     * @return array
      */
-    public function getAllDocuments()
+    public function getAllDocuments(): array
     {
         $documents = [];
 
@@ -221,10 +174,8 @@ class Directory implements ArrayAccess
 
     /**
      * Returns all directories.
-     * 
-     * @return array
      */
-    public function getAllDirectories()
+    public function getAllDirectories(): array
     {
         $directories = [];
 
@@ -241,24 +192,16 @@ class Directory implements ArrayAccess
 
     /**
      * Returns a file path.
-     * 
-     * @param string $id
-     * 
-     * @return string
      */
-    private function getDocumentPath($id)
+    private function getDocumentPath(string $id): string
     {
         return $this->getDirectoryPath($id).'.'.$this->format->getExtension();
     }
 
     /**
      * Returns a directory path.
-     * 
-     * @param string $id
-     * 
-     * @return string
      */
-    private function getDirectoryPath($id)
+    private function getDirectoryPath(string $id): string
     {
         if ($this->path === '') {
             return "/{$id}";
@@ -314,32 +257,24 @@ class Directory implements ArrayAccess
 
     /**
      * Property magic method used to directories.
-     * 
-     * @param string $id
-     * 
-     * @return Directory
      */
-    public function __get($id)
+    public function __get(string $id): Directory
     {
         return $this->getDirectory($id);
     }
 
     /**
      * Property magic method used to directories.
-     * 
-     * @param string $id
      */
-    public function __isset($id)
+    public function __isset(string $id): bool
     {
         return $this->hasDirectory($id);
     }
 
     /**
      * Property magic method used to directories.
-     * 
-     * @param string $id
      */
-    public function __unset($id)
+    public function __unset(string $id)
     {
         $this->deleteDirectory($id);
     }

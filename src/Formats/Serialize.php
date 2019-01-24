@@ -6,26 +6,17 @@ use FlyCrud\FormatInterface;
 
 class Serialize implements FormatInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getExtension()
+    public function getExtension(): string
     {
         return 'txt';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function stringify(array $data)
+    public function stringify(array $data): string
     {
         return serialize($data);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function parse($source)
+    public function parse($source): array
     {
         return unserialize($source) ?: [];
     }

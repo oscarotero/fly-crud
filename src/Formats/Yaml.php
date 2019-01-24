@@ -7,26 +7,17 @@ use Symfony\Component\Yaml\Yaml as YamlConverter;
 
 class Yaml implements FormatInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getExtension()
+    public function getExtension(): string
     {
         return 'yml';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function stringify(array $data)
+    public function stringify(array $data): string
     {
         return YamlConverter::dump($data);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function parse($source)
+    public function parse($source): array
     {
         return (array) YamlConverter::parse($source);
     }
